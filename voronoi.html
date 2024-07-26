@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Voronoi - Raphaël Reynouard</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Simple line icons-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+        <!-- Voronoi JS-->
+        <script src="js/voronoi/aloupis.js"></script>
+        <script src="js/voronoi/fortune.js"></script>
+        <script src="js/voronoi/p5.js"></script>
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <a class="menu-toggle rounded" href="#"><i class="fas fa-bars"></i></a>
+        <nav id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand"><a href="index.html">Playground</a></li>
+                <li class="sidebar-nav-item"><a href="#about">Problem description</a></li>
+                <li class="sidebar-nav-item"><a href="#applet-voronoi">Applet</a></li>
+                <li class="sidebar-nav-item"><a href="#algorithm">The algorithm</a></li>
+                <li class="sidebar-nav-item"><a href="#references">References</a></li>
+                <li class="sidebar-nav-item"><a href="https://raphaelreynouard.com" target="_blank"><i>Raphaël Reynouard</i></a></li>
+            </ul>
+        </nav>
+        <!-- Header-->
+        <header class="masthead masthead-voronoi d-flex align-items-center">
+            <div class="container px-4 px-lg-5 text-center">
+                <h1 class="mb-1">The Voronoi Problem</h1>
+                <h4 class="mb-5">Computational Geometry - Algorithm</h4>
+            </div>
+        </header>
+        <!-- About-->
+        <section class="content-section bg-light" id="about">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>Problem description</h2>
+                        <div class="lead mb-5 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/voronoi/bxl1.png" style="width: 30%;" alt="Image for second paragraph">
+                            <p>Imagine you have a map of your town with all the ice cream shops marked on it.
+                            You and your friends want to find out which ice cream shop is the closest to each of your houses.
+                            Instead of checking each shop one by one, you use a special kind of map called a <b>Voronoi diagram</b>.
+                            </p>
+                            <p>
+                            In this special map, the town is divided into regions, where each region belongs to one ice cream shop.
+                            Every point within a region is closer to its corresponding ice cream shop than to any other shop.
+                            So, if you’re standing anywhere in a particular region, you know exactly which ice cream shop you should go to because it’s the closest one.
+                            </p>
+                        </div>
+                        <div class="lead mb-5 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/voronoi/bxl2.png" style="width: 30%;" alt="Image for second paragraph">
+                            <p>Creating this special map for a large town with many ice cream shops could take a lot of time if done manually.
+                            But with the <b>Fortune’s algorithm</b>, we can make this map quickly and efficiently.
+                            This algorithm helps us draw the boundaries of each region in such a way that finding the nearest ice cream
+                            shop for any location becomes super easy and fast.
+                            </p>
+                            <p>
+                            So, the <b>Voronoi problem</b> is all about figuring out these regions for a set of points (ice cream shops) on a map,
+                            so you can always find out which shop is closest to any given spot in the town.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Services-->
+        <section class="content-section bg-primary text-white text-center" id="applet-voronoi">
+            <div class="container px-4 px-lg-5 mb-3">
+                <div class="content-section-heading">
+                    <h2 class="mb-3">Applet</h2>
+                </div>
+                <p>Click to add a ice cream shop. The Voronoi diagram is updated on the go.</p>
+                <a class="applet-button rounded-circle text-white mr-3" onclick="clearSitesFortune();"><i class="icon-reload" id="clearButton"></i></a>
+            </div>
+            <div id="drawp5_fortune">
+                <script language="javascript" type="text/javascript">
+                    var sites = [];
+                    var xr = window.innerWidth/2;
+                    var yb = window.innerHeight/2;
+                    var result = null;
+                    var can1 = null;
+
+                    const s1 = ( sketch1 ) => {
+
+                        sketch1.setup = () => {
+                            can1 = sketch1.createCanvas(xr, yb);
+                            can1.mousePressed(fortuneMousePressed);
+                            sketch1.fill('white');
+                        };
+
+                        sketch1.draw = () => {
+                            sketch1.background(150);
+                            for (i in sites) {
+                                sketch1.ellipse(sites[i].x,sites[i].y,6,6);
+                            }
+                            if (result){
+                                for (i in result.edges){
+                                    sketch1.line(result.edges[i].va.x,result.edges[i].va.y,result.edges[i].vb.x,result.edges[i].vb.y);
+                                }
+                            }
+                        }
+                    };
+
+                    let myp51 = new p5(s1, document.getElementById("drawp5_fortune"));
+
+                    function fortuneMousePressed(){
+                        sites.push({x:Math.floor(myp51.mouseX), y:Math.floor(myp51.mouseY)});
+                        fortune();
+                    }
+
+
+                    function clearSitesFortune(){
+                        sites = [];
+                        result = null;
+                    }
+
+                    function fortune(){
+                        var voronoi = new Voronoi();
+                        result = voronoi.compute(sites,{xl:0, xr:xr, yt:0, yb:yb});
+                    }
+
+                </script>
+            </div>
+        </section>
+
+
+        <section class="content-section bg-light" id="algorithm">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>The Fortune’s algorithm</h2>
+                        <div class="lead mb-5 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/voronoi/gif1.gif" style="width: 40%;">
+                            <p class="text-with-math">
+                                The Fortune's algorithm generates the Voronoi diagram of any set of points <i>P</i> in <i>O(n log n)</i> time.
+                                It's a sweep line algorithm: the algorithm moves a line in a direction (let's suppose here, without 
+                                lost of generality, to the bottom) and executes some actions if some events occur. During all the
+                                process the algorithm maintains a data structure. At the begining the sweep line is at the top side.
+                            </p>
+                        </div>
+                        <div class="lead mb-5 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/voronoi/gif2.gif" style="width: 40%;">
+                            <p class="text-with-math">
+                                The idea is the following: the algorithm will move the line and cuts the half-plane at the top of the
+                                line (the half-plane already covered) in cells. For some points in the top half-plane it can already
+                                determine whose is the nearest neighbor in <i>P</i>. In practice, for each point <i>p</i> of <i>P</i>
+                                already covered by the line, the points in the top half-plane whose the nearest neighbor is <i>p</i>
+                                form a parabola. We denote <i>par<sub>p</sub></i>(<i>t</i>) the parabola for the point <i>p</i> of <i>P</i>
+                                at time <i>t</i> because it depends on the position of the sweep line as illustrated by the animation.
+                            </p>
+                        </div>
+                        <div class="lead mb-5 float-start">
+                            <img class="float-sm-end me-5" src="assets/img/voronoi/gif3.gif" style="width: 30%;">
+                            <p class="text-with-math">
+                                When two parabolas collapse, for example <i>par<sub>p</sub></i> and <i>par<sub>q</sub></i>, the intersection is the
+                                set of points at same distance from <i>p</i> and <i>q</i>. Formally the intersection between
+                                <i>par<sub>p</sub></i> and <i>par<sub>q</sub></i> is given by &#8899;<sub>t</sub> (<i>par<sub>p</sub></i>(<i>t</i>)
+                                &cup; <i>par<sub>q</sub></i>(<i>t</i>)). In other words it is an edge of <i>Vor<sub>P</sub></i> (more precisely it 
+                                s the edge separating <i>Vor<sub>P</sub></i>(<i>p</i>) and <i>Vor<sub>P</sub></i>(<i>q</i>)). On the illustration the
+                                green part and the blue part are the final cells of the two points, they are represented for the understanding only.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section bg-primary text-white text-center" id="references">
+            <h2>References & Sources</h2>
+            [1] M. de Berg, M. van Kreveld, M. Overmars, O. Schwarzkopf, <i>Computational Geometry: Algorithms and Applications</i>, 1999. Pages 158-159 in the third edition.<br>
+            [2] G. Aloupis, H. Pérez-Rosés, G. Pineda-Villavicencio, P. Taslakian, D. Trinchet-Almaguer <i>Fitting Voronoi Diagrams to Planar Tesselations</i>, 2013 <a href="papers/fitting-iwoca13C-output.pdf">pdf link</a><br>
+            [3] https://github.com/gorhill/Javascript-Voronoi<br>
+            [4] https://www.desmos.com/calculator/ejatebvup4<br>
+            [5] S. Fortune, <i>A Sweepline Algorithm for Voronoi Diagrams </i>, 1987 <a href="papers/936fortune-1987-voronoi.pdf">pdf link</a><br>
+        </section>
+        <!-- Callout-->
+        <!--<section class="callout">
+            <div class="container px-4 px-lg-5 text-center">
+                <h2 class="mx-auto mb-5">
+                    Welcome to
+                    <em>your</em>
+                    next website!
+                </h2>
+                <a class="btn btn-primary btn-xl" href="https://startbootstrap.com/theme/stylish-portfolio/">Download Now!</a>
+            </div>
+        </section>-->
+        <!-- Call to Action-->
+        <!--<section class="content-section bg-primary text-white">
+            <div class="container px-4 px-lg-5 text-center">
+                <h2 class="mb-4">The buttons below are impossible to resist...</h2>
+                <a class="btn btn-xl btn-light me-4" href="#!">Click Me!</a>
+                <a class="btn btn-xl btn-dark" href="#!">Look at Me!</a>
+            </div>
+        </section>-->
+        
+        <!-- Footer-->
+        <footer class="footer text-center">
+            <div class="container px-4 px-lg-5">
+                <ul class="list-inline mb-5">
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white mr-3" href="mailto:raphael.reynoaurd.eawag@gmail.com"><i class="icon-envelope"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white" href="#!"><i class="icon-social-github"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white mr-3" href="#!"><i class="icon-share" id="shareButton"></i></a>
+                    </li>
+                    <div id="notification">URL copied to clipboard</div>
+                    <script>
+                        document.getElementById('shareButton').addEventListener('click', function() {
+                            const url = window.location.href;
+                            navigator.clipboard.writeText(url).then(function() {
+                                const notification = document.getElementById('notification');
+                                notification.classList.add('show');
+                                setTimeout(() => {
+                                    notification.classList.remove('show');
+                                }, 2000);
+                            }, function(err) {
+                                console.error('Failed to copy: ', err);
+                            });
+                        });
+                    </script>
+                </ul>
+                <p class="text-muted small mb-0" id="copyright_text"></p>
+                <script>
+                    const d = new Date();
+                    let year = d.getFullYear();
+                    document.getElementById("copyright_text").innerHTML = "Copyright &copy; Raphaël Reynouard " + year;
+                </script>
+            </div>
+        </footer>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
