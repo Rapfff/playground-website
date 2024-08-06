@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Network and Cooperation - Raphaël Reynouard</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Simple line icons-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <a class="menu-toggle rounded" href="#"><i class="fas fa-bars"></i></a>
+        <nav id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand"><a href="index.html">Playground</a></li>
+                <li class="sidebar-nav-item"><a href="#about">Problem description</a></li>
+                <li class="sidebar-nav-item"><a href="#applet-voronoi">Applet</a></li>
+                <li class="sidebar-nav-item"><a href="#algorithm">The algorithm</a></li>
+                <li class="sidebar-nav-item"><a href="#references">References</a></li>
+                <li class="sidebar-nav-item"><a href="https://raphaelreynouard.com" target="_blank"><i>Raphaël Reynouard</i></a></li>
+            </ul>
+        </nav>
+        <!-- Header-->
+        <header class="masthead masthead-game_theory d-flex align-items-center">
+            <div class="container px-4 px-lg-5 text-center">
+                <h1 class="mb-1">Network and Cooperation</h1>
+                <h4 class="mb-5">Game Theory - Graphs</h4>
+            </div>
+        </header>
+
+        <!-- Applet -->
+        <section class="content-section bg-primary text-white text-center" id="applet-game_theory">
+            <div class="container px-4 px-lg-5">
+                <div class="row">
+                    <div class="col">
+                        <div class="event-wrap px-3 py-4">
+                            <h4 class="text-center">Graph settings</h4>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="nb_nodes" class="form-label">Nodes</label>
+                                    <div class="range-container">
+                                        <span class="range-min">2</span>
+                                        <input type="range" class="form-range" min="2" max="40" value="10" name="nb_nodes" id="nb_node_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-nb_nodes">10</span>
+                                        <span class="range-max">50</span>
+                                    </div>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label class="form-label">Graph type</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="graph_type" id="graph_type_input_ba" value="scale-free" checked>
+                                        <label class="form-check-label" for="graph_type_input_ba">
+                                            Scale-free
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="graph_type" id="graph_type_input_er" value="random">
+                                        <label class="form-check-label" for="graph_type_input_er">
+                                            Random
+                                        </label>
+                                    </div>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="param" class="form-label">Parameter</label>
+                                    <div class="range-container">
+                                        <span class="range-min" id="range-param-min">2</span>
+                                        <input type="range" class="form-range" min="2" max="6" value="4" name="param" id="param_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-param">4</span>
+                                        <span class="range-max" id="range-param-max">6</span>
+                                    </div>
+                                </div>
+                    
+                                <div class="mb-3">
+                                    <label for="defect_prob" class="form-label">Defector probability</label>
+                                    <div class="range-container">
+                                        <span class="range-min">1</span>
+                                        <input type="range" class="form-range" min="1" max="100" name="defect_prob" id="prob_defect_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-prob_defect">50</span>
+                                        <span class="range-max">100</span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="col">
+                            <div class="text-center event-wrap px-3 py-4">
+                                <ul class="list-inline mb-3 user-select-none">
+                                    <li class="list-inline-item">
+                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" onclick="play_pause();"><i class="icon-control-play" id="play-pause-button"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-round-button" onclick="round();"><i class="icon-control-end"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" id="reset-button" onclick="reset();"><i class="icon-reload"></i></a>
+                                    </li>
+                                </ul>
+                                <h4 id="round-counter">Press start</h4>
+                                <div id="mynetwork"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col">
+                            <div class="event-wrap px-3 py-4">
+                                <h4 class="text-center">Results</h4>
+                                <canvas id="mychart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+       
+
+        <section class="content-section bg-primary text-white " id="references">
+            <h2 class="text-center mb-4">References & Sources</h2>
+            <div class="container px-5 px-lg-5">
+            [1] M. de Berg, M. van Kreveld, M. Overmars, O. Schwarzkopf, <i>Computational Geometry: Algorithms and Applications</i>, 1999. Pages 158-159 in the third edition.<br>
+            [2] G. Aloupis, H. Pérez-Rosés, G. Pineda-Villavicencio, P. Taslakian, D. Trinchet-Almaguer <i>Fitting Voronoi Diagrams to Planar Tesselations</i>, 2013, <a href="assets/pdf/fitting-iwoca13C-output.pdf" style="color: white; text-decoration: none;"><i class="icon-doc" ></i></a><br>
+            [3] https://github.com/gorhill/Javascript-Voronoi<br>
+            [4] https://www.desmos.com/calculator/ejatebvup4<br>
+            [5] S. Fortune, <i>A Sweepline Algorithm for Voronoi Diagrams </i>, 1987, <a href="assets/pdf/936fortune-1987-voronoi.pdf" style="color: white; text-decoration: none;"><i class="icon-doc" ></i></a>
+            </div>
+        </section>
+        <!-- Callout-->
+        <!--<section class="callout">
+            <div class="container px-4 px-lg-5 text-center">
+                <h2 class="mx-auto mb-5">
+                    Welcome to
+                    <em>your</em>
+                    next website!
+                </h2>
+                <a class="btn btn-primary btn-xl" href="https://startbootstrap.com/theme/stylish-portfolio/">Download Now!</a>
+            </div>
+        </section>-->
+        <!-- Call to Action-->
+        <!--<section class="content-section bg-primary text-white">
+            <div class="container px-4 px-lg-5 text-center">
+                <h2 class="mb-4">The buttons below are impossible to resist...</h2>
+                <a class="btn btn-xl btn-light me-4" href="#!">Click Me!</a>
+                <a class="btn btn-xl btn-dark" href="#!">Look at Me!</a>
+            </div>
+        </section>-->
+        
+        <!-- Footer-->
+        <footer class="footer text-center">
+            <div class="container px-4 px-lg-5">
+                <ul class="list-inline mb-5">
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white mr-3" href="mailto:raphael.reynoaurd.eawag@gmail.com"><i class="icon-envelope"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white" href="https://github.com/Rapfff/playground-website" target="_blank"><i class="icon-social-github"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="social-link rounded-circle text-white mr-3"><i class="icon-share" id="shareButton"></i></a>
+                    </li>
+                    <div id="notification">URL copied to clipboard</div>
+                    <script>
+                        document.getElementById('shareButton').addEventListener('click', function() {
+                            const url = window.location.href;
+                            navigator.clipboard.writeText(url).then(function() {
+                                const notification = document.getElementById('notification');
+                                notification.classList.add('show');
+                                setTimeout(() => {
+                                    notification.classList.remove('show');
+                                }, 2000);
+                            }, function(err) {
+                                console.error('Failed to copy: ', err);
+                            });
+                        });
+                    </script>
+                </ul>
+                <p class="text-muted small mb-0" id="copyright_text"></p>
+                <script>
+                    const d = new Date();
+                    let year = d.getFullYear();
+                    document.getElementById("copyright_text").innerHTML = "Copyright &copy; Raphaël Reynouard " + year;
+                </script>
+            </div>
+        </footer>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <!-- Game Theory JS-->
+         <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="js/net_and_gt/main.js"></script>
+    </body>
+</html>
