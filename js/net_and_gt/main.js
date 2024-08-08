@@ -1,16 +1,14 @@
 var mat, strats, nbNodes, param, defectProb;
 var graphType, nodes, edges, network;
 
-var R = 2;
-var S = 0;
-var T = 3;
-var P = 1;
+var R, S, T, P;
 
 var paused = true;
 var interval = null;
 var round_counter = 0;
-var chart;
-const ctx = document.getElementById('mychart');
+var chart_line, chat_doughnut;
+const ctx_chart_line = document.getElementById('mychart');
+const ctx_chart_doughnut = document.getElementById('mychart2');
 
 function range(start, stop, step) {
     // Handle the case where only one argument is provided
@@ -107,7 +105,9 @@ function mat_filter_bottom_left(mat){
     return res;
 }
 
-function create_net() {
+
+async function create_net() {
+    enable_disable_form(true, true, true);
     reset_counter();
     get_network_settings();
     // Your heavy function implementation here
@@ -161,6 +161,27 @@ function create_net() {
         }
     };
     network = new vis.Network(container, data, options);
+    network.on("stabilizationProgress", function (params) {
+        document.getElementById("loadingBar").style.opacity = 1;
+        var maxWidth = 496;
+        var minWidth = 20;
+        var widthFactor = params.iterations / params.total;
+        var width = Math.max(minWidth, maxWidth * widthFactor);
+
+        document.getElementById("bar").style.width = width + "px";
+        document.getElementById("text").innerText =
+          Math.round(widthFactor * 100) + "%";
+      });
+      network.once("stabilizationIterationsDone", function () {
+        document.getElementById("text").innerText = "100%";
+        document.getElementById("bar").style.width = "496px";
+        document.getElementById("loadingBar").style.opacity = 0;
+        enable_disable_form(false, true, true);
+        // really clean the dom element
+        /*setTimeout(function () {
+          document.getElementById("loadingBar").style.display = "none";
+        }, 500);*/
+    });
     print_results();
 }
 
@@ -203,22 +224,26 @@ function create_scalefree_net_matrix() {
         }
     }
     let nb_edges = binomialCoeff2(param);
-    for (let i = param; i < nbNodes; i++) {
-        let temp = new Array(i).fill(0);
-        let sumTemp = 0;
-        while (sumTemp !== param) {
-            temp = new Array(i).fill(0);
-            sumTemp = 0;
-            for (let j = 0; j < i; j++) {
-                if (Math.random() < get_deg(j) / nb_edges) {
-                    temp[j] = 1;
-                    sumTemp++;
-                }
-            }
+    let rand, k, sum_k;
+    for (let curr_node = param; curr_node < nbNodes; curr_node++) {
+        let probs = [], temp = [];
+        for (let j = 0; j < curr_node; j++) {
+            probs.push(get_deg(j) / nb_edges);
+            temp.push(0);
         }
-        for (let j = 0; j < i; j++) {
-            if (temp[j] === 1) {mat[i][j] = 1; mat[j][i] = 1;}
-            else{               mat[i][j] = 0; mat[j][i] = 0;}
+        for (let curr_edge = 0; curr_edge < param; ++curr_edge){
+            rand = Math.random() * probs.reduce((partialSum, a) => partialSum + a, 0);
+            k = 0, sum_k = probs[0];
+            while (rand > sum_k) {
+                ++k;
+                sum_k += probs[k];
+            }
+            temp[k] = 1;
+            probs[k] = 0.0;
+        }
+        for (let j = 0; j < curr_node; j++) {
+            if (temp[j] === 1) {mat[curr_node][j] = 1; mat[j][curr_node] = 1;}
+            else{               mat[curr_node][j] = 0; mat[j][curr_node] = 0;}
         }
         nb_edges += param;
     }
@@ -259,23 +284,39 @@ function create_random_net_matrix() {
 
 //-------------------------------------------------------------------------
 
-function enable_disable_form(val) {
-    let ids = ["graph_type_input_ba", "graph_type_input_er", "param_input", "prob_defect_input", "nb_node_input"];
-    ids.forEach(element => {
-        let el = document.getElementById(element);
-        el.disabled = val;
-    });
-    let el = document.getElementById("play-round-button");
-    if (val){ el.classList.add('btn-disabled'); el.onclick="";
-              
+function enable_disable_form(val_form, play_round_also, play_pause_also) {
+    var form = document.getElementById('graph-settings-form');
+    Array.from(form.elements).forEach(el => el.disabled = val_form);
+    form = document.getElementById('penalties-form');
+    Array.from(form.elements).forEach(el => el.disabled = val_form);
+
+    if (play_round_also){
+        let el = document.getElementById("play-round-button");
+        if (val_form){ el.classList.add('btn-disabled'); el.onclick="";
+                
+        }
+        else    { el.classList.remove('btn-disabled'); el.onclick=round;}
     }
-    else    { el.classList.remove('btn-disabled'); el.onclick=round;}
+    if (play_pause_also){
+        let el = document.getElementById("play-pause-button");
+        if (val_form){ el.classList.add('btn-disabled'); el.onclick="";
+                
+        }
+        else    { el.classList.remove('btn-disabled'); el.onclick=play;}
+    }
 
 }
 
 function reset_counter(){
     round_counter = 0;
     document.getElementById('round-counter').innerHTML = "Press start";
+}
+
+function get_penalties(){
+    R = document.getElementById('input-R').value;
+    T = document.getElementById('input-T').value;
+    S = document.getElementById('input-S').value;
+    P = document.getElementById('input-P').value;
 }
 
 function update_round_counter(){
@@ -338,26 +379,21 @@ function update_round(payoffs){
 }
 
 function round(){
+    get_penalties();
     update_round(play_round());
     update_round_counter();
     update_results();
 }
 
-function play_pause(){
-    if (paused){
-        play();
-    }
-    else {
-        pause();
-    }
-}
+//-------------------------------------------------------------------------
 
 function play(){
-    let button = document.getElementById("play-pause-button");
+    let button = document.getElementById("play-pause-button-i");
     button.classList.add('icon-control-pause');
     button.classList.remove('icon-control-play');
     paused = false;
-    enable_disable_form(true);
+    enable_disable_form(true,true,false);
+    document.getElementById("play-pause-button").onclick = pause;
 
     if (interval) {
         clearInterval(interval);
@@ -367,11 +403,12 @@ function play(){
 }
 
 function pause(){
-    let button = document.getElementById("play-pause-button");
+    let button = document.getElementById("play-pause-button-i");
     button.classList.add('icon-control-play');
     button.classList.remove('icon-control-pause');
     paused = true;
-    enable_disable_form(false);
+    enable_disable_form(false,true,false);
+    document.getElementById("play-pause-button").onclick = play;
 
     if (interval) {
         clearInterval(interval);
@@ -398,25 +435,27 @@ function reset(){
     print_results();
 }
 
+//-------------------------------------------------------------------------
+
 function print_results(){
-    if (typeof chart !== 'undefined' && chart !== null) {
-        chart.destroy();
+    let val = (strats.reduce((count, value) => count + (value ? 1 : 0), 0));
+    if (typeof chart_line !== 'undefined' && chart_line !== null) {
+        chart_line.destroy();
     }
-    let val = 100*(strats.reduce((count, value) => count + (value ? 1 : 0), 0))/strats.length;
-    chart = new Chart(ctx, {
+    chart_line = new Chart(ctx_chart_line, {
         type: 'line',
         data: {
             labels: [0],
             datasets: [{
                 label: 'defectors (%)',
-                data: [val],
+                data: [100*val/nbNodes],
                 borderWidth: 1,
                 borderColor : "#f86257",
                 backgroundColor: "#f44336"
             },
             {
                 label: 'collaborators (%)',
-                data: [100-val],
+                data: [100-(100*val/nbNodes)],
                 borderWidth: 1,
                 borderColor : "#aed25c",
                 backgroundColor : "#8fce00"
@@ -446,14 +485,42 @@ function print_results(){
             }
         }
     });
+    if (typeof chart_doughnut !== 'undefined' && chart_doughnut !== null) {
+        chart_doughnut.destroy();
+    }
+    chart_doughnut = new Chart(ctx_chart_doughnut, {
+        type: 'doughnut',
+        data: {
+            labels: ['Defectors','Collaborators'],
+            datasets: [{
+                label: ' ',
+                data: [val, nbNodes-val],
+                backgroundColor: ["#f44336","#8fce00"],
+                hoverOffset: 4
+            }]
+            },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+            }
+        }
+    });
 }
 function update_results(){
-    const data = chart.data;
-    let val = 100*(strats.reduce((count, value) => count + (value ? 1 : 0), 0))/strats.length
-    data.labels = range(round_counter+1);
-    data.datasets[0].data.push(val);
-    data.datasets[1].data.push(100-val);
-    chart.update();
+    let val = strats.reduce((count, value) => count + (value ? 1 : 0), 0);
+    const data_cd = chart_doughnut.data;
+    data_cd.datasets[0].data[0] = val;
+    data_cd.datasets[0].data[1] = nbNodes-val;
+    chart_doughnut.update();
+
+    val = 100*val/nbNodes;
+    const data_cl = chart_line.data;
+    data_cl.labels = range(round_counter+1);
+    data_cl.datasets[0].data.push(val);
+    data_cl.datasets[1].data.push(100-val);
+    chart_line.update();
 }
 
 //-------------------------------------------------------------------------

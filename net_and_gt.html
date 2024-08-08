@@ -16,6 +16,9 @@
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/net_and_gt.css" rel="stylesheet" />
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -23,14 +26,20 @@
         <nav id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand"><a href="index.html">Playground</a></li>
-                <li class="sidebar-nav-item"><a href="#about">Problem description</a></li>
-                <li class="sidebar-nav-item"><a href="#applet-voronoi">Applet</a></li>
-                <li class="sidebar-nav-item"><a href="#algorithm">The algorithm</a></li>
-                <li class="sidebar-nav-item"><a href="#references">References</a></li>
+                <li class="sidebar-nav-item"><a href="voronoi.html">Voronoi Problem</a></li>
+                <li class="sidebar-nav-item"><a href="#page-top">Network and Cooperation</a></li>
+                <ul>
+                    <li class="sidebar-nav-item"><a href="#prisoner-dilemma">The prisonner's dilemma</a></li>
+                    <li class="sidebar-nav-item"><a href="#best-strat">Best strategy</a></li>
+                    <li class="sidebar-nav-item"><a href="#games-and-graphs">Games & Graphs</a></li>
+                    <li class="sidebar-nav-item"><a href="#applet-game_theory">Applet</a></li>
+                    <li class="sidebar-nav-item"><a href="#graph-types">Two different types of graph</a></li>
+                    <li class="sidebar-nav-item"><a href="#references">References</a></li>
+                </ul>
                 <li class="sidebar-nav-item"><a href="https://raphaelreynouard.com" target="_blank"><i>Raphaël Reynouard</i></a></li>
             </ul>
         </nav>
-        <!-- Header-->
+        <!-- Header -->
         <header class="masthead masthead-game_theory d-flex align-items-center">
             <div class="container px-4 px-lg-5 text-center">
                 <h1 class="mb-1">Network and Cooperation</h1>
@@ -38,21 +47,119 @@
             </div>
         </header>
 
+        <!-- The Prisoner's dilemma -->
+        <section class="content-section bg-light" id="prisoner-dilemma">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>The prisonner's dilemma</h2>
+                        <div class="lead mb-5 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/voronoi/bxl1.png" style="width: 30%;" alt="Image for second paragraph">
+                            <p>Imagine you and your best friend get caught doing something wrong. You're both taken to separate rooms and can't talk to each other.
+                            The police offer you both a deal:
+                            </p>
+                            <ul>
+                                <li>If you <b>both stay quiet</b> (cooperate with each other), you <b>each get 1 year</b> of punishment.</li>
+                                <li>If you <b>both tell on each other</b> (betray each other), you <b>each get 2 years of punishment</b>.</li>
+                                <li>If one of you stays quiet but the other betrays, the <b>one who tells gets no punishment</b> at all,
+                                    and the <b>one who stayed quiet gets 3 years</b> of punishment.</li>
+                            </ul>
+                            <p>
+                                We say that the Cooperation <b>R</b>eward \(R\) is 2 (since the player get a 2 years <i>discount</i> on the worst penalty, which is 3),
+                                the <b>P</b>unishment payoff \(P\) is 1, the <b>T</b>emptation payoff \(T\) is 3, and finally the <b>S</b>ucker's payoff \(S\) is 0.
+                            </p>
+                            <p>
+                            This situation is tricky because if you stay quiet, you hope your friend does too, so you both get only 1 year. But if you think your
+                            friend will tell on you, you might want to tell on him first, so you don't get 5 years while they go free. And you know that your
+                            friend is thinking the same way in his room.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best strat -->
+        <section class="content-section bg-primary text-white" id="best-strat">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2 class="text-end">What is the best strategy?</h2>
+                        <div class="lead mb-5 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/voronoi/bxl2.png" style="width: 30%;" alt="Image for second paragraph">
+
+                            <ul>
+                                <li>
+                                    Assuming that your friend will betray: if you stay quiet, you will get 3 years, but if you betray you will get only 2 years.
+                                    Thus, in this situation, you should betray.
+                                </li>
+                                <li>
+                                    Now assuming that your friend will stay quiet: if you do so, you will get 1 year, but if you betray you will be free!
+                                    Therefore, in this situation too, you should betray.
+                                </li>
+                            </ul>
+                            <p>
+                            Consequently, if the two prisoners think rationnally, they will both betray. In game theory, this is called a <b>Nash Equilibirum</b>: no player
+                            could gain by changing his own strategy.
+                            </p>
+                            <p>This reasoning leads us to believe that no one should cooperate. But if this is true when there are only two players, is it also true
+                            when we consider an entire <b>community</b> where everyone repeatedly plays against their neighbors?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games and graphs -->
+        <section class="content-section bg-light" id="games-and-graphs">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>Games and Graphs</h2>
+                        <div class="lead mb-5 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/voronoi/bxl1.png" style="width: 30%;" alt="Image for second paragraph">
+                            <p>We represent this community as a graph, where each node is a player. Each of them is a defector, colored in red, or a collaborator, colored
+                                in green.
+                            </p>
+                            <p>
+                                <ul>
+                                    <li>At each round, each player is playing a Prisoner's Dilemma game with each of their neighbors, playing the same
+                                        action (Cooperate or Betray) with each one of them.</li>
+                                    <li>Then, each player will compare his results with one of his neighbors, and mimic is strategy according to this rule: each individual \(i\) chooses randomly
+                                        one of their direct neighbors \(j\) and with a probability \(P_{ij}\) defined as: $$P_{ij} = \frac{W_j - W_i}{k_{max}D_{max}}$$
+                                        where \(W_i\) and \(W_j\) are the payoffs of player \(i\) and \(j\), \(k_{max}\) is the biggest degree between the nodes \(i\) and \(j\),
+                                        and \(D_{max} = \max(T,R) - \min(S,P)\). </li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="lead mb-5 float-end">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Applet -->
         <section class="content-section bg-primary text-white text-center" id="applet-game_theory">
-            <div class="container px-4 px-lg-5">
+            <h2 class="mb-3">Applet</h2>
+            <div class="container">
+                <p class="text-start mb-4">The following applet allows you to observe how the two strategies spead among the player. You can set the value of the four different
+                    rewards, the probability of a player being a defector at the begining, the number of players, as well as the graph geeneration process
+                    (Scale-free or Random, see below).
+                </p>
                 <div class="row">
-                    <div class="col">
-                        <div class="event-wrap px-3 py-4">
-                            <h4 class="text-center">Graph settings</h4>
-                            <form>
+                    <div class="col-3">
+                        <div class="event-wrap px-3 py-4 mb-3">
+                            <h4 class="text-center">Settings</h4>
+                            <form id="graph-settings-form">
                                 <div class="mb-3">
                                     <label for="nb_nodes" class="form-label">Nodes</label>
                                     <div class="range-container">
                                         <span class="range-min">2</span>
                                         <input type="range" class="form-range" min="2" max="40" value="10" name="nb_nodes" id="nb_node_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
                                         <span class="range-bubble" id="range-bubble-nb_nodes">10</span>
-                                        <span class="range-max">50</span>
+                                        <span class="range-max">40</span>
                                     </div>
                                 </div>
                     
@@ -93,51 +200,113 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="col">
-                            <div class="text-center event-wrap px-3 py-4">
-                                <ul class="list-inline mb-3 user-select-none">
-                                    <li class="list-inline-item">
-                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" onclick="play_pause();"><i class="icon-control-play" id="play-pause-button"></i></a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-round-button" onclick="round();"><i class="icon-control-end"></i></a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a class="applet-button rounded-circle text-white mr-3 mb-3" id="reset-button" onclick="reset();"><i class="icon-reload"></i></a>
-                                    </li>
-                                </ul>
-                                <h4 id="round-counter">Press start</h4>
-                                <div id="mynetwork"></div>
-                            </div>
+                        <div class="event-wrap px-3 py-4">
+                            <h4 class="text-center">Rewards</h4>
+                            <form id="penalties-form">
+                                <div class="form-group row">
+                                    <label for="R" class="col-sm-9 col-form-label col-form-label-sm">Cooperation <b>R</b>eward</label>
+                                    <div class="col-sm-3">
+                                      <input type="number" class="form-control form-control-sm" id="input-R" placeholder="col-form-label-sm" value="2">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="P" class="col-sm-9 col-form-label col-form-label-sm"><b>P</b>unishment payoff</label>
+                                    <div class="col-sm-3">
+                                      <input type="number" class="form-control form-control-sm" id="input-P" placeholder="col-form-label-sm" value="1">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="T" class="col-sm-9 col-form-label col-form-label-sm"><b>T</b>emptation payoff</label>
+                                    <div class="col-sm-3">
+                                      <input type="number" class="form-control form-control-sm" id="input-T" placeholder="col-form-label-sm" value="3">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="S" class="col-sm-9 col-form-label col-form-label-sm"><b>S</b>ucker's payoff</label>
+                                    <div class="col-sm-3">
+                                      <input type="number" class="form-control form-control-sm" id="input-S" placeholder="col-form-label-sm" value="0">
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="col">
-                            <div class="event-wrap px-3 py-4">
-                                <h4 class="text-center">Results</h4>
-                                <canvas id="mychart"></canvas>
+                    <div class="col-6">
+                        <div class="text-center event-wrap px-3 py-4">
+                            <ul class="list-inline mb-3 user-select-none">
+                                <li class="list-inline-item">
+                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-pause-button" onclick="play();"><i class="icon-control-play" id="play-pause-button-i"></i></a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-round-button" onclick="round();"><i class="icon-control-end"></i></a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="reset-button" onclick="reset();"><i class="icon-reload"></i></a>
+                                </li>
+                            </ul>
+                            <h4 id="round-counter">Press start</h4>
+                            <div id="loadingBar">
+                                    <div id="text">0%</div>
+                                    <div id="border">
+                                        <div id="bar"></div>
+                                    </div>
                             </div>
+                            <div id="mynetwork"></div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="event-wrap px-3 py-4 mb-3">
+                            <h4 class="text-center">Results</h4>
+                            <canvas height="240vh" id="mychart"></canvas>
+                            <canvas height="240vh" id="mychart2"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-
-       
+        <!-- Gaph Types -->
+        <section class="content-section bg-light" id="graph-types">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2 class="text-end">Two different types of graph</h2>
+                        <div class="lead mb-5 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/voronoi/bxl2.png" style="width: 30%;" alt="Image for second paragraph">
+                            <p>A <b>random graph (Erdős-Rényi)</b> is built by randomly connecting pairs of nodes with a fixed probability, so each connection
+                                is equally likely, resulting in a graph where most nodes have a similar number of connections (degree).<br>
+                                In contrast, a <b>scale-free graph (Barabási-Albert)</b> grows by adding new nodes that preferentially connect to existing nodes with more
+                                connections, following a "rich-get-richer" principle. This process creates a graph where a few nodes, called hubs, have
+                                many connections, while most nodes have only a few.
+                                <br>The key difference is that random graphs have a more uniform
+                                distribution of connections, while scale-free graphs have a few highly connected hubs and many less connected nodes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section class="content-section bg-primary text-white " id="references">
             <h2 class="text-center mb-4">References & Sources</h2>
             <div class="container px-5 px-lg-5">
-            [1] M. de Berg, M. van Kreveld, M. Overmars, O. Schwarzkopf, <i>Computational Geometry: Algorithms and Applications</i>, 1999. Pages 158-159 in the third edition.<br>
-            [2] G. Aloupis, H. Pérez-Rosés, G. Pineda-Villavicencio, P. Taslakian, D. Trinchet-Almaguer <i>Fitting Voronoi Diagrams to Planar Tesselations</i>, 2013, <a href="assets/pdf/fitting-iwoca13C-output.pdf" style="color: white; text-decoration: none;"><i class="icon-doc" ></i></a><br>
-            [3] https://github.com/gorhill/Javascript-Voronoi<br>
-            [4] https://www.desmos.com/calculator/ejatebvup4<br>
-            [5] S. Fortune, <i>A Sweepline Algorithm for Voronoi Diagrams </i>, 1987, <a href="assets/pdf/936fortune-1987-voronoi.pdf" style="color: white; text-decoration: none;"><i class="icon-doc" ></i></a>
+                [1] Nash, John F. "Equilibrium points in n-person games". (1950)<br>
+                [2] Boccaletti, Stefano, Vito Latora, Yamir Moreno, Martin Chavez, and D-U. Hwang. "Complex networks:
+                Structure and dynamics." Physics reports 424, no. 4-5 (2006): 175-308.<br>
+                [3] Erdős, Paul, and Alfréd Rényi. "On the evolution of random graphs." Publ. Math. Inst. Hung. Acad. Sci 5,
+                no. 1 (1960): 17-60.<br>
+                [4] Albert, Réka, and Albert-László Barabási. "Statistical mechanics of complex networks." Reviews of modern
+                physics 74, no. 1 (2002): 47.<br>
+                [5] Clauset, Aaron, Cosma Rohilla Shalizi, and Mark EJ Newman. "Power-law distributions in empirical data."
+                SIAM review 51, no. 4 (2009): 661-703.<br>
+                [6] Santos, Francisco C., Jorge M. Pacheco, and Tom Lenaerts. "Evolutionary dynamics of social dilemmas in
+                structured heterogeneous populations." Proceedings of the National Academy of Sciences 103, no. 9 (2006):
+                3490-3494.<br>
+                [7] Roca, Carlos P., José A. Cuesta, and Angel Sánchez. "Evolutionary game theory: Temporal and spatial
+                effects beyond replicator dynamics." Physics of life reviews 6.4 (2009): 208-249.
             </div>
         </section>
+
+        
         <!-- Callout-->
         <!--<section class="callout">
             <div class="container px-4 px-lg-5 text-center">
