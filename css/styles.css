@@ -11065,6 +11065,14 @@ footer.footer .social-link:hover {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.masthead-aco {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%), url("../assets/img/aco-bg.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .masthead h1, .masthead .h1 {
   font-size: 4rem;
   margin: 0;
