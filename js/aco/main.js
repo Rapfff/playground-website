@@ -4,15 +4,17 @@ const ctx = canvas.getContext('2d');
 var mat;
 var phero;
 var paths;
+var round_counter = 0;
 var interval = null;
-const width = 10;
-const height = 10;
+var reseted = false;
+var width;
+var height;
 var prob0 = 0.1;
 var prob1 = 0.2;
 const start = {x:0, y:0};
-const end = {x:width-1, y:height-1};
+var end;
 const cell_size = Math.floor(500/width);
-var nb_ants = 1;
+var nb_ants;
 const ant_size = Math.floor(500/(width*3));
 const ant_draw_offset = 0.5*(cell_size-ant_size);
 var ants;
@@ -42,6 +44,21 @@ function hideBubble(rangeInput) {
     bubble.style.opacity = 0;
 }
 
+function disable_buttons_form(){
+    let el = document.getElementById("play-iteration-button");
+    el.classList.add('btn-disabled'); el.onclick="";
+    el = document.getElementById("play-pause-button");
+    el.classList.add('btn-disabled'); el.onclick="";
+}
+
+function enable_buttons_form(){
+    let el = document.getElementById("play-iteration-button");
+    el.classList.remove('btn-disabled'); el.onclick=play_iteration_button;
+    el = document.getElementById("play-pause-button");
+    el.classList.remove('btn-disabled'); el.onclick=play;
+}
+
+
 //-------------------------------------------------------------------------
 
 class Ant {
@@ -65,7 +82,9 @@ class Ant {
                  this.x * cell_size + ant_draw_offset,
                  ant_size,
                  ant_size);
-        ctx.fillStyle = '#fff';
+        if (this.y == end.y && this.x == end.x){ ctx.fillStyle = "#8fce00"}
+        else if (this.y == start.y && this.x == start.x){ ctx.fillStyle = "#dc052d"}
+        else { ctx.fillStyle = '#fff';}
         ctx.fill();
     }
     move(){
@@ -105,10 +124,12 @@ class Ant {
         this.done = (this.x == end.x) && (this.y == end.y);
     }
     reset(){
+        this.erase();
         this.x = start.x;
         this.y = start.y;
         this.done = false;
         this.path_length = 0;
+        this.draw();
     }
   }
 
@@ -163,6 +184,10 @@ function id_to_d(id){
 }
 
 function generate_map(){
+    nb_ants = document.getElementById('nb_ants_input').value;
+    height = width = document.getElementById('map_size_input').value;    
+    end = {x:width-1, y:height-1};
+    
     let temp = [];
     for (let w = 0; w < width; w++) {
         temp.push([]);
@@ -188,16 +213,22 @@ function generate_map(){
     for (let h = 0; h < height; h++) {
         mat[width-1][h] = false;
     }
+    reset();
+    reset_iteration();
 }
 
 function reset(){
     //draw the map and init the ants
+    reseted = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log(width, height, start, end, mat);
     for (let i = 0; i < height; i++) {
         for (let j = 0; j < width; j++) {
             ctx.beginPath();
             ctx.rect(j * cell_size, i * cell_size, cell_size, cell_size);
-            ctx.fillStyle = mat[i][j] ? '#61dafb' : '#fff';
+            if (i == end.y && j == end.x){ ctx.fillStyle = "#8fce00"}
+            else if (i == start.y && j == start.x){ ctx.fillStyle = "#dc052d"}
+            else { ctx.fillStyle = mat[i][j] ? '#61dafb' : '#fff';}
             ctx.fill();
             ctx.stroke();
         }
@@ -206,6 +237,8 @@ function reset(){
     for (let index = 0; index < nb_ants; index++) {
         ants.push(new Ant(index));
     }
+    document.getElementById('round-counter').innerHTML = "Press start";
+    round_counter = 0;
 }
 
 function add_paths(sx, sy, dx, dy, ant_id) {
@@ -222,7 +255,6 @@ function reset_iteration(){
 }
 
 function play_round(){
-    //move the ants
     let done = true;
     ants.forEach(ant => {
         ant.move();
@@ -237,8 +269,29 @@ function sleep(ms) {
 
 async function play_iteration(){
     reset_iteration();
-    while (!play_round()){await sleep(10);}
-    update_pheromon();
+    round_counter++;
+    document.getElementById('round-counter').innerHTML = "Round "+ round_counter;
+    while ( !reseted && !play_round()){await sleep(100);}
+    if (!reseted) {
+        update_pheromon();
+    }
+}
+
+async function play_iteration_button(){
+    reseted = false;
+    disable_buttons_form();
+    await play_iteration();
+    enable_buttons_form();
+}
+
+async function play(){
+    reseted = false;
+    disable_buttons_form();
+    for (let i = 0; i<10; ++i) {
+        await play_iteration();
+        if (reseted){break;}
+    }
+    enable_buttons_form();
 }
 
 function update_pheromon(){
@@ -252,6 +305,22 @@ function update_pheromon(){
     }
 }
 
+// -----------------------------------------------------------
+
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
 generate_map();
-reset();
-reset_iteration();
+// Attach event listeners to the input elements
+const debouncedGetNetworkSettings = debounce(generate_map, 300);
+
+document.getElementById('nb_ants_input').addEventListener('input', debouncedGetNetworkSettings);
+document.getElementById('map_size_input').addEventListener('input', debouncedGetNetworkSettings);
+//document.getElementById('sim_speed_input').addEventListener('input', debouncedGetNetworkSettings);
+

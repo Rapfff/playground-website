@@ -59,48 +59,31 @@
                             <h4 class="text-center">Settings</h4>
                             <form id="graph-settings-form">
                                 <div class="mb-3">
-                                    <label for="nb_nodes" class="form-label">Nodes</label>
-                                    <div class="range-container">
-                                        <span class="range-min">2</span>
-                                        <input type="range" class="form-range" min="2" max="40" value="10" name="nb_nodes" id="nb_node_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
-                                        <span class="range-bubble" id="range-bubble-nb_nodes">10</span>
-                                        <span class="range-max">40</span>
-                                    </div>
-                                </div>
-                    
-                                <div class="mb-3">
-                                    <label class="form-label">Graph type</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="graph_type" id="graph_type_input_ba" value="scale-free" checked>
-                                        <label class="form-check-label" for="graph_type_input_ba">
-                                            Scale-free
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="graph_type" id="graph_type_input_er" value="random">
-                                        <label class="form-check-label" for="graph_type_input_er">
-                                            Random
-                                        </label>
-                                    </div>
-                                </div>
-                    
-                                <div class="mb-3">
-                                    <label for="param" class="form-label">Parameter</label>
-                                    <div class="range-container">
-                                        <span class="range-min" id="range-param-min">2</span>
-                                        <input type="range" class="form-range" min="2" max="6" value="4" name="param" id="param_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
-                                        <span class="range-bubble" id="range-bubble-param">4</span>
-                                        <span class="range-max" id="range-param-max">6</span>
-                                    </div>
-                                </div>
-                    
-                                <div class="mb-3">
-                                    <label for="defect_prob" class="form-label">Defector probability</label>
+                                    <label for="nb_ants" class="form-label">Ants</label>
                                     <div class="range-container">
                                         <span class="range-min">1</span>
-                                        <input type="range" class="form-range" min="1" max="100" name="defect_prob" id="prob_defect_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
-                                        <span class="range-bubble" id="range-bubble-prob_defect">50</span>
-                                        <span class="range-max">100</span>
+                                        <input type="range" class="form-range" min="1" max="20" value="10" name="nb_ants" id="nb_ants_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-nb_ants">10</span>
+                                        <span class="range-max">20</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sim_speed" class="form-label">Simulation Speed</label>
+                                    <div class="range-container">
+                                        <span class="range-min">1</span>
+                                        <input type="range" class="form-range" min="1" max="10" value="1" name="sim_speed" id="sim_speed_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-sim_speed">1</span>
+                                        <span class="range-max">10</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="map_size" class="form-label">Map dimension</label>
+                                    <div class="range-container">
+                                        <span class="range-min">10</span>
+                                        <input type="range" class="form-range" min="10" max="50" value="20" name="map_size" id="map_size_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-map_size">20</span>
+                                        <span class="range-max">50</span>
                                     </div>
                                 </div>
                             </form>
@@ -110,10 +93,10 @@
                         <div class="text-center event-wrap px-3 py-4">
                             <ul class="list-inline mb-3 user-select-none">
                                 <li class="list-inline-item">
-                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-pause-button" onclick="play_iteration();"><i class="icon-control-play" id="play-pause-button-i"></i></a>
+                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-pause-button" onclick="play();"><i class="icon-control-play" id="play-pause-button-i"></i></a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-round-button" onclick="play_round();"><i class="icon-control-end"></i></a>
+                                    <a class="applet-button rounded-circle text-white mr-3 mb-3" id="play-iteration-button" onclick="play_iteration();"><i class="icon-control-end"></i></a>
                                 </li>
                                 <li class="list-inline-item">
                                     <a class="applet-button rounded-circle text-white mr-3 mb-3" id="reset-button" onclick="reset();"><i class="icon-reload"></i></a>
