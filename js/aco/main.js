@@ -5,9 +5,12 @@ var mat;
 var phero;
 var phero_colors;
 var paths;
+
 var round_counter = 0;
+
 var interval = null;
 var reseted = false;
+
 var width;
 var height;
 var prob0 = 0.15;
@@ -19,6 +22,7 @@ var ant_size;
 var ant_draw_offset;
 var nb_ants;
 var ants;
+
 var alpha = 1.0; //phero influence
 var beta = 1.0; // a priori knowledge influence
 const rho = 0.1; // evaporation coef
@@ -28,6 +32,13 @@ var sim_speed = 1.0;
 
 const ctx_chart_line = document.getElementById('mychart');
 var chart_line;
+
+const directions = [
+    [0, -1], // left  0
+    [0, 1],  // right 1
+    [-1, 0],  // up    2
+    [1, 0]  // down  3
+];
 //-------------------------------------------------------------------------
 
 function disable_buttons_form(){
@@ -73,27 +84,23 @@ class Ant {
     decide_destination(){
         if (this.done){return null;}
         let probs = [];
-        for (let dx = -1; dx < 2; dx++) {
-            for (let dy = -1; dy < 2; dy++) {
-                if (valid_coor(this.x+dx, this.y+dy)){
-                    probs.push(abs_attractiveness_transition(this.x, this.y, dx, dy));
-                }
-                else{
-                    probs.push(0.0);
-                }
+        for (const [dx, dy] of directions) {
+            if (valid_coor(this.x+dx, this.y+dy)){
+                probs.push(abs_attractiveness_transition(this.x, this.y, dx, dy));
+            }
+            else{
+                probs.push(0.0);
             }
         }
-        probs[4] = 0.0;
         let sum = sum_array(probs);
         let ran = Math.random();
         probs[0] = probs[0]/sum;
         let i;
-        for (i = 0; i < 9; ++i){
+        for (i = 0; i < 4; ++i){
             if (ran < probs[i]){ break ;}
             probs[i+1] = probs[i+1]/sum + probs[i];
         }
-        let dx = Math.floor(i/3) - 1;
-        let dy = (i % 3) - 1;
+        const [dx, dy] = id_to_d(i);
         add_paths(this.x, this.y, dx, dy, this.id)
         this.path_length++;
         this.dest_x = this.x + dx;
@@ -175,11 +182,21 @@ function id_to_coords(id){
 }
 
 function d_to_id(dx,dy){
-    return (dx+1)*3 + dy+1;
+    if (dx == 0){
+        return Math.floor((dy+1)/2);
+    }
+    else{
+        return Math.floor((dx+1)/2)+2;
+    }
 }
 
 function id_to_d(id){
-    return [Math.floor(id / 3) - 1, (id % 3) - 1];
+    if (id >= 2){
+        return [(id-2)*2-1,0];
+    }
+    else{
+        return [0,id*2-1];
+    }
 }
 
 function update_sim_speed(){
@@ -188,7 +205,6 @@ function update_sim_speed(){
 
 function update_exploitation(){
     let threshold = parseFloat(document.getElementById('exploitation_input').value)/100;
-    console.log(threshold);
     alpha = 2.0*threshold;
     beta = 2.0 - alpha;
 }
@@ -205,10 +221,7 @@ function sum_array(arr){
     return arr.reduce((partialSum, a) => partialSum + a, 0);
 }
 
-function generate_map(){
-    update_printing_values();
-    print_results();
-    nb_ants = document.getElementById('nb_ants_input').value;
+function draft_map(){
     let temp = [];
     for (let w = 0; w < width; w++) {
         temp.push([]);
@@ -217,7 +230,7 @@ function generate_map(){
         }
     }
     mat = [];
-    phero = Array.from({ length: width * height }, () => Array(9).fill(init_pheromon));
+    phero = Array.from({ length: width * height }, () => Array(4).fill(init_pheromon));
     for (let w = 0; w < width; w++) {
         mat.push([]);
         for (let h = 0; h < height; h++) {
@@ -228,12 +241,45 @@ function generate_map(){
     
     mat[start.x][start.y] = false;
     mat[end.x][end.y] = false;
-    for (let w = 0; w < width; w++) {
-        mat[w][0] = false;
+}
+
+function pathExists(){
+    function dfs(x, y, visited) {
+        if (x === width - 1 && y === height - 1) {
+            return true; // Reached the destination
+        }
+
+        visited[x][y] = true;
+
+        for (const [dx, dy] of directions) {
+            const newX = x + dx;
+            const newY = y + dy;
+
+            if (valid_coor(newX, newY) && !visited[newX][newY] && !mat[newX][newY]) {
+                if (dfs(newX, newY, visited)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
-    for (let h = 0; h < height; h++) {
-        mat[width-1][h] = false;
-    }
+
+    // Initialize visited matrix
+    const visited = Array.from({ length: width }, () => Array(height).fill(false));
+
+    // Start DFS from the top-left corner (0, 0)
+    return dfs(0, 0, visited);
+}
+
+function generate_map(){
+    update_printing_values();
+    print_results();
+    nb_ants = document.getElementById('nb_ants_input').value;
+    
+    draft_map()
+    while(!pathExists()){draft_map();}
+    
     reset();
     reset_iteration();
     reseted = false;
@@ -257,7 +303,7 @@ function reset(){
     //draw the map and init the ants, reset phero
     reseted = true;
     round_counter = 0;
-    phero = Array.from({ length: width * height }, () => Array(9).fill(init_pheromon));
+    phero = Array.from({ length: width * height }, () => Array(4).fill(init_pheromon));
     update_cells_colors();
     draw_map();
     ants = [];
@@ -275,7 +321,7 @@ function add_paths(sx, sy, dx, dy, ant_id) {
 }
 
 function reset_iteration(){
-    paths = Array.from({ length: width*height }, () => Array.from({ length: 9 }, () => []));
+    paths = Array.from({ length: width*height }, () => Array.from({ length: 4 }, () => []));
     ants.forEach(ant => { ant.reset();});
     draw_map();
 }
@@ -330,7 +376,7 @@ async function play(){
 
 function update_pheromon(){
     for (let cell = 0; cell < width*height; ++cell){
-        for (let d = 0; d < 9; ++d){
+        for (let d = 0; d < 4; ++d){
             phero[cell][d] *= (1-rho);
             for (let ai of paths[cell][d]){
                 phero[cell][d] += Q/ants[ai].path_length;
