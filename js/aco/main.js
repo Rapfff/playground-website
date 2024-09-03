@@ -26,7 +26,7 @@ var ants;
 var alpha = 1.0; //phero influence
 var beta = 1.0; // a priori knowledge influence
 const rho = 0.1; // evaporation coef
-const Q = 50; // new phero intensity (each ant add Q/length_of_it_path)
+const Q = 18; // new phero intensity (each ant add Q/length_of_it_path)
 const init_pheromon = 0.1;
 var sim_speed = 1.0;
 
@@ -69,7 +69,7 @@ class Ant {
                  this.pix_x,
                  ant_size,
                  ant_size);
-        ctx.fillStyle = '#aa98a9';
+        ctx.fillStyle = '#444444';
         ctx.fill();
     }
     erase(){
@@ -113,6 +113,8 @@ class Ant {
         if (f == 0){
             this.delta_x = Math.round(this.dest_pix_x - this.pix_x)/length;
             this.delta_y = Math.round(this.dest_pix_y - this.pix_y)/length;
+            this.pix_x += this.delta_x;
+            this.pix_y += this.delta_y;
         }
         else if (f == length - 1){
             this.x = this.dest_x;
@@ -121,8 +123,10 @@ class Ant {
             this.pix_y = this.dest_pix_y;
             this.check_done();
         }
-        this.pix_x += this.delta_x;
-        this.pix_y += this.delta_y;
+        else{
+            this.pix_x += this.delta_x;
+            this.pix_y += this.delta_y;
+        }
         this.draw();
     }
     check_done(){
@@ -489,7 +493,15 @@ function update_results(){
         if (ant.path_length > max) max = ant.path_length;
     });
     const data_cl = chart_line.data;
-    data_cl.labels = range(1,round_counter+1);
+    if (round_counter > 9){
+        data_cl.labels = range(round_counter-8,round_counter+1);
+        data_cl.datasets[0].data.shift();
+        data_cl.datasets[1].data.shift();
+        data_cl.datasets[2].data.shift();
+    }
+    else{
+        data_cl.labels = range(1,round_counter+1);
+    }
     data_cl.datasets[0].data.push(average/nb_ants);
     data_cl.datasets[1].data.push(min);
     data_cl.datasets[2].data.push(max);
