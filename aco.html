@@ -81,15 +81,15 @@
                                     <label for="map_size" class="form-label">Map dimension</label>
                                     <div class="range-container">
                                         <span class="range-min">10</span>
-                                        <input type="range" class="form-range" min="10" max="50" value="20" name="map_size" id="map_size_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
-                                        <span class="range-bubble" id="range-bubble-map_size">20</span>
-                                        <span class="range-max">50</span>
+                                        <input type="range" class="form-range" min="10" max="30" value="10" name="map_size" id="map_size_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-map_size">10</span>
+                                        <span class="range-max">30</span>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <div class="col-9">
+                    <div class="col-6">
                         <div class="text-center event-wrap px-3 py-4">
                             <ul class="list-inline mb-3 user-select-none">
                                 <li class="list-inline-item">
@@ -104,6 +104,12 @@
                             </ul>
                             <h4 id="round-counter">Press start</h4>
                             <canvas id="grid_world" width="500px" height="500px"></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="event-wrap px-3 py-4 mb-3">
+                                <h4 class="text-center">Results</h4>
+                                <canvas height="240vh" id="mychart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -155,6 +161,8 @@
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
         <!-- Ant Colony JS-->
+         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+         <script src="js/utils.js"></script>
         <script src="js/aco/main.js"></script>
     </body>
 </html>
