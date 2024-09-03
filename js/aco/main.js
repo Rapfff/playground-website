@@ -19,8 +19,8 @@ var ant_size;
 var ant_draw_offset;
 var nb_ants;
 var ants;
-const alpha = 1.0; //phero influence
-const beta = 1.0; // a priori knowledge influence
+var alpha = 1.0; //phero influence
+var beta = 1.0; // a priori knowledge influence
 const rho = 0.1; // evaporation coef
 const Q = 50; // new phero intensity (each ant add Q/length_of_it_path)
 const init_pheromon = 0.1;
@@ -102,7 +102,7 @@ class Ant {
         this.dest_pix_y = (this.dest_y) * cell_size + ant_draw_offset;
     }
     move(f,length){
-        if (this.done){this.draw; return null;}
+        if (this.done){this.draw(); return null;}
         if (f == 0){
             this.delta_x = Math.round(this.dest_pix_x - this.pix_x)/length;
             this.delta_y = Math.round(this.dest_pix_y - this.pix_y)/length;
@@ -184,6 +184,13 @@ function id_to_d(id){
 
 function update_sim_speed(){
     sim_speed = parseFloat(document.getElementById('sim_speed_input').value); 
+}
+
+function update_exploitation(){
+    let threshold = parseFloat(document.getElementById('exploitation_input').value)/100;
+    console.log(threshold);
+    alpha = 2.0*threshold;
+    beta = 2.0 - alpha;
 }
 
 function update_printing_values(){
@@ -461,4 +468,4 @@ const debouncedGetNetworkSettings = debounce(generate_map, 300);
 document.getElementById('nb_ants_input').addEventListener('input', debouncedGetNetworkSettings);
 document.getElementById('map_size_input').addEventListener('input', debouncedGetNetworkSettings);
 document.getElementById('sim_speed_input').addEventListener('input', update_sim_speed);
-
+document.getElementById('exploitation_input').addEventListener('input', update_exploitation);

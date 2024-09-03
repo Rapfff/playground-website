@@ -68,6 +68,15 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="map_size" class="form-label">Map dimension</label>
+                                    <div class="range-container">
+                                        <span class="range-min">10</span>
+                                        <input type="range" class="form-range" min="10" max="30" value="10" name="map_size" id="map_size_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <span class="range-bubble" id="range-bubble-map_size">10</span>
+                                        <span class="range-max">30</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
                                     <label for="sim_speed" class="form-label">Simulation Speed</label>
                                     <div class="range-container">
                                         <span class="range-min">1</span>
@@ -76,14 +85,12 @@
                                         <span class="range-max">10</span>
                                     </div>
                                 </div>
-
                                 <div class="mb-3">
-                                    <label for="map_size" class="form-label">Map dimension</label>
+                                    <label for="exploitation" class="form-label">Exploration/Exploitation</label>
                                     <div class="range-container">
-                                        <span class="range-min">10</span>
-                                        <input type="range" class="form-range" min="10" max="30" value="10" name="map_size" id="map_size_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
-                                        <span class="range-bubble" id="range-bubble-map_size">10</span>
-                                        <span class="range-max">30</span>
+                                        <span class="range-min"><i class="icon-compass"></i></span>
+                                        <input type="range" class="form-range" name="exploitation" id="exploitation_input">
+                                        <span class="range-max"><i class="icon-rocket"></i></span>
                                     </div>
                                 </div>
                             </form>
