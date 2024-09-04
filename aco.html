@@ -80,9 +80,9 @@
                                     <label for="sim_speed" class="form-label">Simulation Speed</label>
                                     <div class="range-container">
                                         <span class="range-min">1</span>
-                                        <input type="range" class="form-range" min="1" max="10" value="1" name="sim_speed" id="sim_speed_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
+                                        <input type="range" class="form-range" min="1" max="20" value="1" name="sim_speed" id="sim_speed_input" oninput="updateBubble(this)" onmouseover="showBubble(this)" onmouseout="hideBubble(this)">
                                         <span class="range-bubble" id="range-bubble-sim_speed">1</span>
-                                        <span class="range-max">10</span>
+                                        <span class="range-max">20</span>
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -116,6 +116,19 @@
                             <div class="event-wrap px-3 py-4 mb-3">
                                 <h4 class="text-center">Results</h4>
                                 <canvas height="240vh" id="mychart"></canvas>
+                            </div>
+                            <div class="event-wrap px-3 py-4 mb-3">
+                                <h4 class="text-center">Shortest Paths</h4>
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">Iteration</th>
+                                        <th scope="col">Length</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="shortest_paths-table">
+                                    </tbody>
+                                  </table>
                             </div>
                         </div>
                     </div>

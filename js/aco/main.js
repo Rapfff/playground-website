@@ -1,10 +1,17 @@
 const canvas = document.getElementById('grid_world');
 const ctx = canvas.getContext('2d');
 
+var playing = false;
+
 var mat;
 var phero;
 var phero_colors;
 var paths;
+
+var shortest_paths;
+var one_done;
+var path_width;
+var shortest_path_to_draw_index = -1;
 
 var round_counter = 0;
 
@@ -102,9 +109,13 @@ class Ant {
         }
         const [dx, dy] = id_to_d(i);
         add_paths(this.x, this.y, dx, dy, this.id)
-        this.path_length++;
+
         this.dest_x = this.x + dx;
         this.dest_y = this.y + dy;
+
+        this.path_length++;
+        this.path.push({x:this.dest_x, y:this.dest_y});
+
         this.dest_pix_x = (this.dest_x) * cell_size + ant_draw_offset;
         this.dest_pix_y = (this.dest_y) * cell_size + ant_draw_offset;
     }
@@ -139,6 +150,7 @@ class Ant {
         this.pix_y = this.y * cell_size + ant_draw_offset;
         this.done = false;
         this.path_length = 0;
+        this.path = [{x:this.x, y:this.y}];
         this.draw();
     }
   }
@@ -219,6 +231,7 @@ function update_printing_values(){
     cell_size = Math.floor(500/width);
     ant_size = Math.floor(500/(width*3));
     ant_draw_offset = 0.5*(cell_size-ant_size);
+    path_width = Math.floor(500/(width*6));
 }
 
 function sum_array(arr){
@@ -305,6 +318,7 @@ function draw_map(){
 
 function reset(){
     //draw the map and init the ants, reset phero
+    shortest_paths = [];
     reseted = true;
     round_counter = 0;
     phero = Array.from({ length: width * height }, () => Array(4).fill(init_pheromon));
@@ -325,6 +339,7 @@ function add_paths(sx, sy, dx, dy, ant_id) {
 }
 
 function reset_iteration(){
+    one_done = false;
     paths = Array.from({ length: width*height }, () => Array.from({ length: 4 }, () => []));
     ants.forEach(ant => { ant.reset();});
     draw_map();
@@ -339,9 +354,16 @@ async function play_round(){
     for (let frame = 0; frame < nb_frames; frame++) {
         draw_map();
         ants.forEach(ant => { ant.move(frame, nb_frames);});
+        draw_shortest_path();
         await sleep(1);
     }
-    ants.forEach(ant => { done = done && ant.done;});
+    ants.forEach(ant => { 
+        if (ant.done && !one_done){
+            one_done = true;
+            shortest_paths.push({it:round_counter, length:ant.path_length, path:ant.path})
+            update_shortest_paths();
+        }
+        done = done && ant.done;});
     return done;
 }
 
@@ -362,20 +384,24 @@ async function play_iteration(){
 }
 
 async function play_iteration_button(){
-    reseted = false;
+    reseted = true;
+    playing = true;
     disable_buttons_form();
     await play_iteration();
     enable_buttons_form();
+    playing = false;
 }
 
 async function play(){
     reseted = false;
+    playing = true;
     disable_buttons_form();
     for (let i = 0; i<10; ++i) {
         await play_iteration();
         if (reseted){break;}
     }
     enable_buttons_form();
+    playing = false;
 }
 
 function update_pheromon(){
@@ -508,6 +534,62 @@ function update_results(){
     chart_line.update();
 }
 
+function update_shortest_paths(){
+    if (round_counter > 5){
+        shortest_paths.shift();
+    }
+    let txt = '';
+    shortest_paths.forEach(sp => {
+        txt += '<tr style="cursor:help;" onmouseenter="shortest_path_to_draw_index='+sp.it+'" onmouseleave="shortest_path_to_draw_index=-1"><th scope="row">'+sp.it+'</th><td>'+sp.length+'</td></tr>';
+        }
+    )    
+    document.getElementById("shortest_paths-table").innerHTML = txt;
+}
+
+function draw_shortest_path(){
+    let index = shortest_path_to_draw_index;
+    if (index < 0){return null;}
+    
+    index -= 1;
+    if (round_counter > 5){ index -= round_counter - 5;}
+    index = Math.max(index, 0);
+    
+    for (let i = 0; i < shortest_paths[index].length; i++) {
+        ctx.beginPath();
+        if (shortest_paths[index].path[i].x == shortest_paths[index].path[i+1].x){
+            ctx.rect(Math.min(shortest_paths[index].path[i].y, shortest_paths[index].path[i+1].y) * cell_size + 0.5*cell_size - 0.5*path_width,
+                     shortest_paths[index].path[i].x * cell_size + 0.5*cell_size - 0.5*path_width,
+                     cell_size + path_width,
+                     path_width);
+        }
+        else{
+            ctx.rect(shortest_paths[index].path[i].y * cell_size + 0.5*cell_size - 0.5*path_width,
+                     Math.min(shortest_paths[index].path[i].x, shortest_paths[index].path[i+1].x) * cell_size + 0.5*cell_size - 0.5*path_width,
+                     path_width,
+                     cell_size + path_width);
+        }
+        ctx.fillStyle = "rgb(125, 000, 0)";
+        ctx.fill();
+    }
+    
+}
+
+async function draw_shortest_path_loop(){
+    let prev_val = shortest_path_to_draw_index;
+    while(true){
+        await sleep(5);
+        if (!playing){
+        if (shortest_path_to_draw_index != prev_val){
+        if (prev_val != -1){ draw_map();}
+        if (shortest_path_to_draw_index != -1){
+            draw_shortest_path();
+        }
+        prev_val = shortest_path_to_draw_index;
+        }
+        }
+    }
+}
+
 // -----------------------------------------------------------
 
 // Debounce function
@@ -520,6 +602,7 @@ function debounce(func, delay) {
 }
 
 generate_map();
+draw_shortest_path_loop();
 // Attach event listeners to the input elements
 const debouncedGetNetworkSettings = debounce(generate_map, 300);
 
