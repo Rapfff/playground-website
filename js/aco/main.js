@@ -33,7 +33,7 @@ var ants;
 var alpha = 1.0; //phero influence
 var beta = 1.0; // a priori knowledge influence
 const rho = 0.1; // evaporation coef
-const Q = 18; // new phero intensity (each ant add Q/length_of_it_path)
+var Q; // new phero intensity (each ant add Q/length_of_it_path)
 const init_pheromon = 0.1;
 var sim_speed = 1.0;
 
@@ -161,12 +161,14 @@ function inv_distance_to_goal(x,y){
     if (mat[x][y]){
         return 0;
     }
+    /*
     else if (x == end.x && end.y == y){
         return 255;
     }
     else{
         return 1/Math.max(Math.abs(end.x - x), Math.abs(end.y - y));
-    }
+    }*/
+   return 1.0;
 }
 
 function abs_attractiveness_transition(sx,sy,dx,dy){
@@ -232,6 +234,7 @@ function update_printing_values(){
     ant_size = Math.floor(500/(width*3));
     ant_draw_offset = 0.5*(cell_size-ant_size);
     path_width = Math.floor(500/(width*6));
+    Q = width + height - 2;
 }
 
 function sum_array(arr){
@@ -374,7 +377,7 @@ function sleep(ms) {
 async function play_iteration(){
     reset_iteration();
     round_counter++;
-    document.getElementById('round-counter').innerHTML = "Round "+ round_counter;
+    document.getElementById('round-counter').innerHTML = "Iteration "+ round_counter;
     done = false;
     while ( !reseted && !done){done = await play_round();}
     if (!reseted) {

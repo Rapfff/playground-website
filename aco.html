@@ -27,13 +27,16 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand"><a href="index.html">Playground</a></li>
                 <li class="sidebar-nav-item"><a href="voronoi.html">Voronoi Problem</a></li>
-                <li class="sidebar-nav-item"><a href="#page-top">Network and Cooperation</a></li>
+                <li class="sidebar-nav-item"><a href="net_and_gt.html">Network and Cooperation</a></li>
+                <li class="sidebar-nav-item"><a href="#page-top">Ant Colony Optimisation</a></li>
                 <ul>
-                    <li class="sidebar-nav-item"><a href="#prisoner-dilemma">The prisonner's dilemma</a></li>
-                    <li class="sidebar-nav-item"><a href="#best-strat">Best strategy</a></li>
-                    <li class="sidebar-nav-item"><a href="#games-and-graphs">Games & Graphs</a></li>
-                    <li class="sidebar-nav-item"><a href="#applet-game_theory">Applet</a></li>
-                    <li class="sidebar-nav-item"><a href="#graph-types">Two different types of graph</a></li>
+                    <li class="sidebar-nav-item"><a href="#ant-quest-for-food">The Ants' Quest for Food</a></li>
+                    <li class="sidebar-nav-item"><a href="#maze-possibilities">Swarm Intelligence</a></li>
+                    <li class="sidebar-nav-item"><a href="#unformal-presentation">Unformal presentation</a></li>
+                    <li class="sidebar-nav-item"><a href="#applet-aco">Applet</a></li>
+                    <li class="sidebar-nav-item"><a href="#formal-presentation">Formal presentation</a></li>
+                    <li class="sidebar-nav-item"><a href="#history-applications">History & applications</a></li>
+                    <li class="sidebar-nav-item"><a href="#personal">Personal notes</a></li>
                     <li class="sidebar-nav-item"><a href="#references">References</a></li>
                 </ul>
                 <li class="sidebar-nav-item"><a href="https://raphaelreynouard.com" target="_blank"><i>Raphaël Reynouard</i></a></li>
@@ -47,11 +50,115 @@
             </div>
         </header>
 
+        <!-- The Ants' Quest for Food -->
+        <section class="content-section bg-light" id="ant-quest-for-food">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>The Ants' Quest for Food</h2>
+                        <div class="lead mb-1 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/aco/pic1.png" style="width: 30%;">
+                            <p>Imagine you're a tiny ant, part of a colony that's constantly on the lookout for food. You have no map, no GPS,
+                                and no fancy gadgets. Yet, somehow, your colony always seems to find the shortest path to food and back to the
+                                nest. How do you do it? The secret lies in a simple, yet remarkably effective strategy: cooperation through
+                                <b>pheromones</b>. This strategy forms the basis of the <b>Ant Colony Algorithm</b>, a clever way of solving complex problems
+                                by mimicking the behavior of real ants.
+                            </p>
+                            <p>The problem this algorithm tackles is finding the <b>best path</b> in a maze of possibilities—whether that maze is a
+                                network of roads, a series of job tasks, or even the layout of a circuit. In technical terms, it’s about optimizing
+                                paths in a graph, which is a fancy way of saying that it helps find the <b>shortest, most efficient route between 
+                                points</b>. Traditionally, this kind of problem could take a long time to solve, especially as the maze gets bigger
+                                and more complicated. But by thinking like ants, we can arrive at a good solution more quickly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strength in Numbers: A Collective Intelligence -->
+        <section class="content-section bg-primary text-white" id="maze-possibilities">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2 class="text-end">Strength in Numbers: A Collective Intelligence</h2>
+                        <div class="lead mb-1 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/aco/pic2.webp" style="width: 30%;">
+                            <p>Here’s how it works: Each "ant" in the algorithm explores the different paths in the maze. As it moves, it
+                                leaves behind a trail of virtual <b>pheromones</b>, just like a real ant. The strength of this pheromone trail depends
+                                on the quality of the path—the shorter and <b>more efficient the route, the stronger the pheromone</b>. Over time,
+                                more ants are drawn to stronger trails, reinforcing the best paths and gradually <b>fading</b> the weaker ones. The 
+                                result is that, after enough time and enough ants, the colony—our algorithm—has collectively identified the best route.
+                            </p>
+                            <p>This approach is both powerful and elegant. It doesn’t require a master plan or central control; instead,
+                                it relies on the simple actions of <b>many agents</b> working together. What’s more, it’s <b>adaptable</b>. If something
+                                changes—say, a new obstacle blocks the path—the ants will naturally find a new way around it, building a
+                                new optimal path as they go. The algorithm isn’t just about solving a problem once; it’s about continually
+                                adapting to find the best solution in a changing environment.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ant Colony Optimisation: an unformal presentation -->
+        <section class="content-section bg-light" id="unformal-presentation">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>Ant Colony Optimisation: an unformal presentation</h2>
+                        <div class="lead mb-1 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/aco/pic3.png" style="width: 30%;">
+                            <p>The <b>Ant Colony Optimization</b> (ACO) algorithm is a <b>probabilistic</b> technique inspired by the foraging behavior of ants.
+                                It is used to solve combinatorial optimization problems, where the objective is to find the best possible solution
+                                from a finite set of possible solutions.
+                            </p>
+                            <p><b>Key Concepts</b>:
+                            <ul>
+                                <li><b>Pheromone Trails</b>: In ACO, artificial ants traverse a graph (which represents the problem space) and deposit
+                                    <b>pheromones</b> on the edges they travel. The amount of pheromone deposited is typically proportional to the quality
+                                    of the solution (e.g., shorter paths result in more pheromones).
+                                </li>
+                                <li><b>Probability of Path Selection</b>: The probability that an ant will choose a specific path is influenced by the
+                                    amount of pheromone on that path and the heuristic information (e.g., the length of the path). Over time, paths
+                                    with higher pheromone levels are more likely to be chosen by other ants, reinforcing successful solutions.
+                                </li>
+                                <li><b>Pheromone Update</b>: As ants traverse the graph, the pheromone levels on all paths are updated. Paths with more
+                                    pheromone become more attractive, while pheromones on less successful paths <b>evaporate</b>, reducing their influence
+                                    over time. This balance between <b>exploration and exploitation</b> allows the algorithm to converge to an optimal or
+                                    near-optimal solution.
+                                </li>
+                            </ul>
+                            </p>
+                        </div>
+                        <div class="lead mb-1 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/aco/pic4.png" style="width: 30%;">
+                            <p><b>Algorithm Steps</b>:
+                            <ul>
+                                <li><b>Initialization</b>: Pheromone levels on all paths are initialized, and parameters such as pheromone evaporation rate and the influence of heuristic information are set.
+                                </li>
+                                <li><b>Construct Solutions</b>: Each ant constructs a solution by moving from node to node based on the probability determined by the pheromone levels and heuristic information.
+                                </li>
+                                <li><b>Update Pheromones</b>: After all ants have constructed their solutions, pheromones are updated based on the quality of the solutions found.
+                                </li>
+                                <li><b>Iteration</b>: The process is repeated for a fixed number of iterations or until convergence criteria are met.
+                                </li>
+                            </ul>
+                            </p>
+                        </div>      
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Applet -->
-        <section class="content-section bg-primary text-white text-center" id="applet-game_theory">
+        <section class="content-section bg-primary text-white text-center" id="applet-aco">
             <h2 class="mb-3">Applet</h2>
             <div class="container">
-                <p class="text-start mb-4">
+                <p class="text-vcenter mb-4">
+                    Press the left button to play 10 iterations, the middle one to play one iteration.<br>
+                    The Exploration/Exploitation range sets the \(\alpha\) and \(\beta\) values (see below).
                 </p>
                 <div class="row">
                     <div class="col-3">
@@ -136,6 +243,94 @@
             </div>
         </section>
 
+        <!-- Ant Colony Optimisation: an formal presentation -->
+        <section class="content-section bg-light" id="formal-presentation">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>Ant Colony Optimisation: a formal presentation</h2>
+                        <div class="lead mb-1 float-start">
+                            <img class="float-sm-end ms-5" src="assets/img/aco/pic5.png" style="width: 30%;">
+                            <p>
+                            <ul>
+                                <li><b>Initialization</b>: initially, an arbitrary decided amount of pheromone is given to each edge
+                                    in the graph: \(\tau_{xy} = I\), with \(I\) this arbitrary value and \(x,y\) two distinct vertices.</li>
+                                <li><b>Construct Solutions</b>: then, at each timestep, each ant moves from \(x\) to \(y\) with probability
+                                    \(p_{xy} = \frac {(\tau _{xy}^{\alpha })(\eta _{xy}^{\beta })}{\sum _{z\in \mathrm {allowed} _{x}}(\tau
+                                    _{xz}^{\alpha })(\eta _{xz}^{\beta })}\), with \( \eta _{xy}\) the desirability of moving from \(x\) to \(y\)
+                                    based on some a priori knowledge (in our implementation, \( \eta _{xy}\) is always 1), \(\alpha \geq 0\)
+                                    and \(\beta \geq 0\) two constants defining the influence of resp. the pheromone and the desirability.
+                                    In our implementation, \(2\geq \alpha \geq 0\) and \(2\geq \beta \geq 0\), and \(\alpha + \beta = 2\).
+                                    Moving the cursor to full exploitation will set \(\alpha = 2, \beta = 0\).</li>
+                                <li><b>Update Pheromones</b>: Once each ant has reached the objective, the pheromone is updated for each edge \(x,y\)
+                                    as follows: \(\tau _{xy}\leftarrow (1-\rho )\tau _{xy}+\sum _{k \in \mathrm{Ants}_{xy}}Q/L_{k}\), with \(Q\) a constant,
+                                    \(L_k\) the length of the path used by ant \(k\) to reach the goal, \(\mathrm{Ants}_{xy}\) the set of ants who moved
+                                    from \(x\) to \(y\) while reaching the goal, and \(\rho\) the evaporation factor.
+                                </li>
+                            </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History and applications -->
+        <section class="content-section bg-primary text-white" id="history-applications">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2 class="text-end">History and applications</h2>
+                        <div class="lead mb-1 float-end">
+                            <img class="float-sm-start me-5" src="assets/img/aco/300px-Dorigo_PHOTO_USE_THIS.jfif" style="width: 30%;">
+                            <p>The Ant Colony Optimization (ACO) algorithm was first introduced by Marco Dorigo in his 1992 Ph.D. thesis. Dorigo
+                                was inspired by the way real ants find the shortest paths to food sources using pheromone trails. He translated
+                                this biological phenomenon into a computational model, leading to the development of ACO as a new heuristic for
+                                solving complex optimization problems. Over the years, the algorithm has been refined and extended, gaining
+                                recognition as a robust method for solving a wide range of combinatorial optimization problems.
+                            </p>
+                            <p>ACO has been applied to a variety of real-world problems, particularly those involving combinatorial optimization.
+                                Some of the most notable applications include the Traveling Salesman Problem (TSP), where the algorithm finds the
+                                shortest possible route that visits a set of cities; vehicle routing, where it optimizes the paths of delivery 
+                                vehicles; and network routing, where it helps determine the most efficient data paths in communication networks.
+                                ACO has also been used in scheduling tasks, such as job-shop scheduling, and in bioinformatics for tasks like protein 
+                                folding and gene selection. Its versatility and effectiveness make it a popular choice for solving complex optimization
+                                problems across diverse fields.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personal notes -->
+        <section class="content-section bg-light" id="personal">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-10">
+                        <h2>Personal Notes</h2>
+                        <div class="lead mb-1 float-start">
+                            <p>
+                                I had the great pleasure of having Marco Dorigo as my professor during my final year of Master’s studies at ULB. Beyond
+                                being a brilliant scientist and researcher, I can confidently say that he is an exceptional teacher who managed to instill
+                                in me—and undoubtedly in many of my peers—a deep fascination for the field of Swarm Intelligence. And he did so in a remarkably
+                                short span of time: due to the COVID-19 pandemic, our classes, which began in February 2020, were prematurely interrupted
+                                less than two months later. Yet, the seed of passion for this field had already been planted. Enthralling, captivating, and 
+                                deeply human, Marco Dorigo has, unknowingly, become a model for me in my quest to become a university professor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- references -->
+        <section class="content-section bg-primary text-white " id="references">
+            <h2 class="text-center mb-4">References & Sources</h2>
+            <div class="container px-5 px-lg-5">
+                [1] Dorigo, M. & Stützle, T. "Ant colony optimization". (2004)
+            </div>
+        </section>
 
         <!-- Footer-->
         <footer class="footer text-center">
